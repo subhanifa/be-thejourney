@@ -13,6 +13,6 @@ app.use(cors())
 // Add endpoint grouping and routing
 app.use('/api/v1/', router)
 
-// app.use('/uploads', express.static('uploads'))
+app.use('/uploads', express.static('uploads'))
 
 app.listen(port, () => console.log(`Starting on port ${port}!`))
