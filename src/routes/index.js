@@ -5,7 +5,7 @@ const { auth } = require('../middlewares/auth')
 
 const { register, login } = require('../controllers/auth')
 const { uploadFile } = require('../middlewares/uploadFile')
-const { addStory } = require('../controllers/story')
+const { addStory, getStories } = require('../controllers/story')
 
 
 
@@ -13,6 +13,6 @@ router.post('/register', register)
 router.post('/login', login)
 
 router.post('/story', auth, uploadFile("image"), addStory)
-
+router.get('/stories', getStories)
 
 module.exports = router
