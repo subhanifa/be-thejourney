@@ -63,8 +63,8 @@ exports.register = async (req, res) => {
         })
 
         res.status(200).send({
-            status: "Success",
-            data: { user }
+            message: "Success",
+            token: token
         });
 
     } catch (error) {
@@ -135,8 +135,9 @@ exports.login = async (req, res) => {
         }
 
         res.status(200).send({
-            status: "Success",
-            data: { user }
+            message: "Success",
+            username: user.email,
+            token: token
         });
 
     } catch (error) {
