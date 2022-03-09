@@ -11,13 +11,29 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      tb_user.hasMany(models.tb_story, {
+        as: "story",
+        foreignKey:{
+          name: "userId"
+        }
+      });
+
+      tb_user.hasMany(models.tb_bookmark, {
+        as: "bookmark",
+        foreignKey:{
+          name: "userId"
+        }
+      });
+
     }
   }
   tb_user.init({
     fullname: DataTypes.STRING,
     phone: DataTypes.STRING,
     email: DataTypes.STRING,
-    password: DataTypes.STRING
+    password: DataTypes.STRING,
+    image: DataTypes.STRING,
+    address: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'tb_user',

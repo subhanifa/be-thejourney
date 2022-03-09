@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class tb_story extends Model {
+  class tb_bookmark extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,31 +11,28 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      tb_story.belongsTo(models.tb_user, {
+      tb_bookmark.belongsTo(models.tb_user, {
         as: "user",
         foreignKey: {
           name: "userId"
         }
       });
 
-      tb_story.belongsTo(models.tb_bookmark, {
-        as: "bookmark",
+      tb_bookmark.hasMany(models.tb_story, {
+        as: "story",
         foreignKey: {
           name: "storyId"
         }
-      })
-
+      });
 
     }
   }
-  tb_story.init({
-    title: DataTypes.STRING,
-    desc: DataTypes.STRING,
-    image: DataTypes.STRING,
-    userId: DataTypes.INTEGER
+  tb_bookmark.init({
+    userId: DataTypes.INTEGER,
+    storyId: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'tb_story',
+    modelName: 'tb_bookmark',
   });
-  return tb_story;
+  return tb_bookmark;
 };
