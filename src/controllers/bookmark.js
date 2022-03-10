@@ -56,6 +56,25 @@ exports.addBookmark = async (req, res) => {
     const input = req.body
 
     try {
+        const bookmarkExist = await tb_bookmark.findOne({
+            where:{
+                id: input.storyId
+            }
+        })
+
+        const userExist = await tb_user.findOne({
+            where:{
+                id: req.tb_user.id
+            }
+        })
+
+        if (userExist && bookmarkExist) {
+            return res.status(400).send({
+                status: "Failed",
+                message: `User id: ${userExist.id} already bookmark Story with id: ${bookmarkExist.id} `,
+            })
+        }
+
         const story = await tb_story.findOne({
             where: {
                 id: input.storyId
@@ -70,10 +89,13 @@ exports.addBookmark = async (req, res) => {
 
         res.send({
             status: "Success",
-            newBookmark,
-            id: story.userId,
-            title: story.title,
-            desc: story.desc,
+            userId: newBookmark.userId,
+            story: { 
+                storyId: newBookmark.storyId,
+                title: story.title,
+                desc: story.desc, 
+                image: story.image
+            }
         })
 
     } catch (error) {

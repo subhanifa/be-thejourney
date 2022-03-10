@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       });
 
-      tb_story.hasMany(models.tb_bookmark, {
+      tb_story.hasOne(models.tb_bookmark, {
         as: "bookmark",
         foreignKey: {
           name: "storyId"
