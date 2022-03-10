@@ -5,29 +5,29 @@ exports.addStory = async (req, res) => {
     // Data from User/Client
     const input = req.body
     try {
-        
         const storyExist = await tb_story.findOne({
             where: {
-                title: input.title
+              title: input.title,
             },
             attributes: {
-                exclude: ["createdAt", "updatedAt"]
-            }
+              exclude: ["createdAt", "updatedAt"],
+            },
         });
-
-        if(storyExist) {
+      
+        if (storyExist) {
             return res.status(400).send({
                 status: "Failed",
-                message: "Title Already Taken"
+                message: "Title already Taken",
             })
         }
+
         const { data } = req.body;
         let newStory = await tb_story.create({
             ...data,
             title: input.title,
             desc: input.desc,
             image: req.file.filename,
-            idUser: req.tb_user.id
+            userId: req.tb_user.id
         })
 
         newStory = JSON.parse(JSON.stringify(newStory))
@@ -48,8 +48,8 @@ exports.addStory = async (req, res) => {
             status: "Failed",
             message: "Server Error",
         });
-    }
-}
+    } 
+} 
 
 exports.getStories = async (req, res) => {
     try {
