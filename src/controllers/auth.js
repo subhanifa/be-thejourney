@@ -67,7 +67,7 @@ exports.register = async (req, res) => {
         // console.log(userId);
 
         res.status(200).send({
-            message: "Success",
+            status: "Success",
             userId
         });
 
@@ -132,7 +132,6 @@ exports.login = async (req, res) => {
         const token = jwt.sign({ id: userExist.id, name: userExist.fullname, email: userExist.email }, process.env.ACCOUNT_TOKEN)
         // const token = jwt.sign({ id: newUser.id, name: newUser.fullname, email: newUser.email }, process.env.ACCOUNT_TOKEN)
 
-
         const user = {
             // id: tb_user.id,
             fullname: userExist.name,
@@ -141,14 +140,14 @@ exports.login = async (req, res) => {
         }
 
         res.status(200).send({
-            message: "Success",
+            status: "Success",
             user: user
         });
 
     } catch (error) {
         console.log(error);
         res.status(500).send({
-            staus: "Failed",
+            status: "Failed",
             message: "Server Error"
         });
     }

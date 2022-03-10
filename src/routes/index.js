@@ -5,7 +5,7 @@ const { auth } = require('../middlewares/auth')
 
 const { register, login } = require('../controllers/auth')
 const { uploadFile } = require('../middlewares/uploadFile')
-const { addStory, getStories } = require('../controllers/story')
+const { addStory, getStories, getStory, deleteStory } = require('../controllers/story')
 
 
 
@@ -14,5 +14,9 @@ router.post('/login', login)
 
 router.post('/story', auth, uploadFile("image"), addStory)
 router.get('/stories', getStories)
+router.get('/story/:id', getStory)
+router.delete('/story/:id',auth, deleteStory)
+
+
 
 module.exports = router

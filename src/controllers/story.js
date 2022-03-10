@@ -1,10 +1,12 @@
 const { tb_story, tb_user } = require('../../models')
+const fs = require('fs');
 
 
 exports.addStory = async (req, res) => {
     // Data from User/Client
     const input = req.body
     try {
+        
         const storyExist = await tb_story.findOne({
             where: {
               title: input.title,
@@ -38,7 +40,7 @@ exports.addStory = async (req, res) => {
 
         res.send({
             id: newStory.id,
-            title: newStory.id,
+            title: newStory.title,
             description: newStory.desc,
             status: "Success"
         })
@@ -78,7 +80,7 @@ exports.getStories = async (req, res) => {
         })
 
         res.send({
-            status: "Success on Getting Stories",
+            status: "Success",
             data: { data }
         })
 
@@ -87,5 +89,77 @@ exports.getStories = async (req, res) => {
             status: "Failed",
             message: "Server Error",
             });
+    }
+}
+
+exports.getStory = async (req, res) => {
+    try {
+        const {id} = req.params
+        let data = await tb_story.findOne({
+            where: {
+                id
+            },
+            include: [
+                {
+                    model: tb_user,
+                    as: "user",
+                    attributes: ["fullname", "email", "createdAt", "updatedAt"]
+                }
+            ],
+            attributes: {
+                exclude: ["createdAt", "updatedAt", "idUser"]
+            }
+        })
+
+        data = JSON.parse(JSON.stringify(data))
+        res.send({
+            status: "Success",
+            message: `Showing Story from id: ${id}`,
+            data: {
+                story: data
+            }
+        })
+
+    } catch (error) {
+        res.send({
+            status: "Failed",
+            message: "Server Error",
+        });
+    }
+}
+
+exports.deleteStory = async (req, res) => {
+    try {
+        const {id} = req.params
+        const story = await tb_story.findOne({
+            where: {
+                id
+            },
+            attributes: ["image"]
+        });
+
+        let imageFile = 'uploads/' + story.image
+        // Deleting File Image
+        fs.unlink(imageFile, (err => {
+            if(err) console.log(err)
+            else console.log("\nDeleted File:" + imageFile)
+        }));
+
+        await tb_story.destroy({
+            where: {
+                id
+            }
+        });
+
+        res.send({
+            status: "Success",
+            message: `Deleted Story id: ${id}`,
+            story: {
+                id
+            }
+        })
+
+    } catch (error) {
+        
     }
 }
