@@ -56,15 +56,16 @@ exports.addBookmark = async (req, res) => {
     const input = req.body
 
     try {
-        const bookmarkExist = await tb_bookmark.findOne({
-            where:{
-                id: input.storyId
-            }
-        })
 
         const userExist = await tb_user.findOne({
             where:{
                 id: req.tb_user.id
+            }
+        })
+
+        const bookmarkExist = await tb_bookmark.findOne({
+            where:{
+                id: input.storyId
             }
         })
 
@@ -100,6 +101,33 @@ exports.addBookmark = async (req, res) => {
 
     } catch (error) {
         res.status(500).send({
+            status: "Failed",
+            message: "Server Error",
+        });
+    }
+}
+
+exports.deleteBookmark = async (req, res) => {
+    try {
+        const {id} = req.params
+        const bookmark = await tb_bookmark.findOne({
+            where: { id }
+        });
+
+        await tb_bookmark.destroy({
+            where: {
+                id
+            }
+        });
+
+        res.send({
+            status: "Success",
+            message: `Deleted Story id: ${id}`,
+            bookmark: bookmark
+        })
+
+    } catch (error) {
+        res.send({
             status: "Failed",
             message: "Server Error",
         });

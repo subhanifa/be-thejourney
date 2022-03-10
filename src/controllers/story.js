@@ -6,7 +6,12 @@ exports.addStory = async (req, res) => {
     // Data from User/Client
     const input = req.body
     try {
-        
+        const userExist = await tb_user.findOne({
+            where:{
+                id: req.tb_user.id
+            }
+        })
+
         const storyExist = await tb_story.findOne({
             where: {
               title: input.title,
@@ -16,7 +21,7 @@ exports.addStory = async (req, res) => {
             },
         });
       
-        if (storyExist) {
+        if (userExist && !storyExist) {
             return res.status(400).send({
                 status: "Failed",
                 message: "Title already Taken",
@@ -160,6 +165,9 @@ exports.deleteStory = async (req, res) => {
         })
 
     } catch (error) {
-        
+        res.send({
+            status: "Failed",
+            message: "Server Error",
+        });
     }
 }
