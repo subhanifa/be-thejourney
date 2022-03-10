@@ -129,7 +129,9 @@ exports.login = async (req, res) => {
             });
         }
 
-        const token = jwt.sign({ id: tb_user.id }, process.env.ACCOUNT_TOKEN)
+        const token = jwt.sign({ id: userExist.id, name: userExist.fullname, email: userExist.email }, process.env.ACCOUNT_TOKEN)
+        // const token = jwt.sign({ id: newUser.id, name: newUser.fullname, email: newUser.email }, process.env.ACCOUNT_TOKEN)
+
 
         const user = {
             // id: tb_user.id,
@@ -140,8 +142,7 @@ exports.login = async (req, res) => {
 
         res.status(200).send({
             message: "Success",
-            username: user.email,
-            token: token
+            user: user
         });
 
     } catch (error) {
