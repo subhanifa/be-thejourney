@@ -6,7 +6,7 @@ const { auth } = require('../middlewares/auth')
 const { register, login } = require('../controllers/auth')
 const { uploadFile } = require('../middlewares/uploadFile')
 const { addStory, getStories, getStory, deleteStory } = require('../controllers/story')
-const { addBookmark } = require('../controllers/bookmark')
+const { addBookmark, deleteBookmark, getBookmarks, getBookmark } = require('../controllers/bookmark')
 
 
 
@@ -19,6 +19,10 @@ router.get('/story/:id', getStory)
 router.delete('/story/:id',auth, deleteStory)
 
 router.post('/bookmark', auth, addBookmark)
+router.get('/bookmarks', getBookmarks)
+router.get('/bookmark/:id', getBookmark)
+router.delete('/bookmark/:id', auth, deleteBookmark)
+
 
 
 

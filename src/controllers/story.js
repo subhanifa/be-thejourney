@@ -117,6 +117,7 @@ exports.getStory = async (req, res) => {
         })
 
         data = JSON.parse(JSON.stringify(data))
+        
         res.send({
             status: "Success",
             message: `Showing Story from id: ${id}`,
