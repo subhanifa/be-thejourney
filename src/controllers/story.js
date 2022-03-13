@@ -1,5 +1,6 @@
 const { tb_story, tb_user } = require('../../models')
 const fs = require('fs');
+const jwt_decode = require('jwt-decode');
 
 
 exports.addStory = async (req, res) => {
@@ -66,7 +67,7 @@ exports.getStories = async (req, res) => {
                 }
             ],
             attributes:  {
-                exclude: ["createdAt", "updatedAt", "idUser"]
+                exclude: [ "updatedAt", "idUser"]
             }
         });
 
@@ -89,6 +90,48 @@ exports.getStories = async (req, res) => {
             status: "Failed",
             message: "Server Error",
             });
+    }
+}
+
+exports.getUserStories = async (req, res) => {
+    try {
+        const token = req.header("Authorization")
+        let decoded = jwt_decode(token)
+        // const { id } = req.params
+        let data = await tb_story.findAll({
+            where: {
+                userId: decoded.id,
+            },
+            include: [
+                {
+                model: tb_user,
+                as: "user",
+                attributes: {
+                    exclude: ["createdAt", "updatedAt", "password", "phone"],
+                },
+            }]
+        })
+        
+        data = JSON.parse(JSON.stringify(data));
+        data = data.map((item) => {
+            return {
+              ...item,
+              image: process.env.FILE_PATH + item.image,
+            };
+        });
+
+        res.send({
+            status: "Success",
+            user: {
+                data
+            }
+        });
+
+    } catch (error) {
+        res.send({
+            status: "Failed",
+            message: "Server Error",
+        });
     }
 }
 
