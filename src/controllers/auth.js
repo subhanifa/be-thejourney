@@ -153,3 +153,41 @@ exports.login = async (req, res) => {
     }
 
 }
+
+exports.checkAuth = async (req, res) => {
+    try {
+      const id = req.tb_user.id;
+  
+      const dataUser = await tb_user.findOne({
+        where: {
+          id,
+        },
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "password"],
+        },
+      });
+  
+      if (!dataUser) {
+        return res.status(404).send({
+          status: "Failed",
+        });
+      }
+  
+      res.send({
+        status: "Success",
+        data: {
+          user: {
+            id: dataUser.id,
+            fullname: dataUser.fullname,
+            email: dataUser.email,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      res.status({
+        status: "Failed",
+        message: "Server Error",
+      });
+    }
+  };

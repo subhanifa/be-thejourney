@@ -6,11 +6,6 @@ exports.addStory = async (req, res) => {
     // Data from User/Client
     const input = req.body
     try {
-        const userExist = await tb_user.findOne({
-            where:{
-                id: req.tb_user.id
-            }
-        })
 
         const storyExist = await tb_story.findOne({
             where: {
@@ -21,7 +16,7 @@ exports.addStory = async (req, res) => {
             },
         });
       
-        if (userExist && !storyExist) {
+        if ( storyExist ) {
             return res.status(400).send({
                 status: "Failed",
                 message: "Title already Taken",
@@ -86,7 +81,7 @@ exports.getStories = async (req, res) => {
 
         res.send({
             status: "Success",
-            data: { data }
+            stories: { data }
         })
 
     } catch (error) {
@@ -116,14 +111,16 @@ exports.getStory = async (req, res) => {
             }
         })
 
-        data = JSON.parse(JSON.stringify(data))
+        story = JSON.parse(JSON.stringify(data))
+        story = {
+            ...story,
+            image: process.env.FILE_PATH + story.image
+        }
         
         res.send({
             status: "Success",
             message: `Showing Story from id: ${id}`,
-            data: {
-                story: data
-            }
+            story,
         })
 
     } catch (error) {

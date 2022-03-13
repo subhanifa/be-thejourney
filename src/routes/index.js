@@ -3,7 +3,7 @@ const router = express.Router()
 
 const { auth } = require('../middlewares/auth')
 
-const { register, login } = require('../controllers/auth')
+const { register, login, checkAuth } = require('../controllers/auth')
 const { uploadFile } = require('../middlewares/uploadFile')
 const { addStory, getStories, getStory, deleteStory } = require('../controllers/story')
 const { addBookmark, deleteBookmark, getBookmarks, getBookmark } = require('../controllers/bookmark')
@@ -12,6 +12,7 @@ const { addBookmark, deleteBookmark, getBookmarks, getBookmark } = require('../c
 
 router.post('/register', register)
 router.post('/login', login)
+router.get('/check-auth', auth, checkAuth);
 
 router.post('/story', auth, uploadFile("image"), addStory)
 router.get('/stories', getStories)

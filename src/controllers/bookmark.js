@@ -19,11 +19,13 @@ exports.addBookmark = async (req, res) => {
             }
         })
 
-        if (userExist && bookmarkExist) {
+        if (userExist && !bookmarkExist) {
             return res.status(400).send({
                 status: "Failed",
                 message: `User id: ${userExist.id} already bookmark Story with id: ${bookmarkExist.id} `,
             })
+        } else {
+            
         }
 
         const story = await tb_story.findOne({
@@ -34,7 +36,7 @@ exports.addBookmark = async (req, res) => {
         const { data } = req.body;
         let newBookmark = await tb_bookmark.create({
             ...data,
-            userId: req.tb_user.id,
+            userId: input.userId,
             storyId: input.storyId
         })
 
@@ -122,9 +124,6 @@ exports.getBookmark = async (req,res) => {
         });
     }
 }
-
-
-
 
 exports.deleteBookmark = async (req, res) => {
     try {
