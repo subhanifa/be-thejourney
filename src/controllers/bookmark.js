@@ -3,53 +3,43 @@ const jwt_decode = require('jwt-decode');
 
 
 exports.addBookmark = async (req, res) => {
-    // Data from User/Client
-    const input = req.body
 
     try {
-        const userExist = await tb_user.findOne({
-            where:{
-                id: req.tb_user.id
-            }
-        })
+        // const token = req.header("Authorization")
+        // let decoded = jwt_decode(token)
+        console.log(req.tb_user)
+        console.log(req.body)
 
         const bookmarkExist = await tb_bookmark.findOne({
             where:{
-                id: input.storyId
+                userId: req.tb_user.id,
+                storyId: req.body.storyId
             }
         })
-
-        if (userExist && !bookmarkExist) {
-            return res.status(400).send({
-                status: "Failed",
-                message: `User id: ${userExist.id} already bookmark Story with id: ${bookmarkExist.id} `,
+        if ( bookmarkExist ) {
+            await tb_bookmark.destroy({
+                where: {
+                    userId: req.tb_user.id,
+                    storyId: req.body.storyId
+                }
+            })
+            res.send({
+                status: "Success",
+                message: "Deleted Bookmark",
             })
         } else {
-            
+            await tb_bookmark.create({
+                userId: req.tb_user.id,
+                storyId: req.body.storyId
+            })
+            res.send({
+                status: "Success",
+                message: "Added Bookmark",
+            })
         }
 
-        const story = await tb_story.findOne({
-            where: {
-                id: input.storyId
-            }
-        })
-        const { data } = req.body;
-        let newBookmark = await tb_bookmark.create({
-            ...data,
-            userId: input.userId,
-            storyId: input.storyId
-        })
+        
 
-        res.send({
-            status: "Success",
-            userId: newBookmark.userId,
-            story: { 
-                storyId: newBookmark.storyId,
-                title: story.title,
-                desc: story.desc, 
-                image: story.image
-            }
-        })
 
     } catch (error) {
         res.status(500).send({
@@ -128,26 +118,30 @@ exports.getUserBookmarks = async (req, res) => {
     try {
         const token = req.header("Authorization")
         let decoded = jwt_decode(token)
+
         let data = await tb_bookmark.findAll({
             where: {
                 userId: decoded.id,
             },
             include: [
                 {
-                    model: tb_user,
-                    as: "user",
-                    attributes: {
-                        exclude: [ "createdAt", "updatedAt", "password", "phone", "address", "image" ]
-                }},
-                {
                     model: tb_story,
                     as: "story",
-                    attributes: {
-                        exclude: [ "createdAt", "updatedAt" ] 
-                }}
+                    include: [
+                        {
+                            model: tb_user,
+                            as: "user",
+                            attributes: {
+                                exclude: [ "createdAt", "updatedAt", "password", "image", "address"]
+                        }},
+                    ],
+                    attributes:{
+                        exclude: ["userId"] 
+                    }
+                }
             ],
-            attributes: {
-                exclude: ["createdAt", "updatedAt"]
+            attributes:{
+                exclude: [ "createdAt", "updatedAt" ]
             }
         })
 
@@ -155,7 +149,7 @@ exports.getUserBookmarks = async (req, res) => {
             status: "Success",
             user: {
                 data
-            }
+            },
         });
 
     } catch (error) {
