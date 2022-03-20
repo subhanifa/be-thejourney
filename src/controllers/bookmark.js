@@ -5,21 +5,19 @@ const jwt_decode = require('jwt-decode');
 exports.addBookmark = async (req, res) => {
 
     try {
-        // const token = req.header("Authorization")
-        // let decoded = jwt_decode(token)
-        console.log(req.tb_user)
-        console.log(req.body)
+        const token = req.header("Authorization")
+        let decoded = jwt_decode(token)
 
         const bookmarkExist = await tb_bookmark.findOne({
             where:{
-                userId: req.tb_user.id,
+                userId: decoded.id,
                 storyId: req.body.storyId
             }
         })
         if ( bookmarkExist ) {
             await tb_bookmark.destroy({
                 where: {
-                    userId: req.tb_user.id,
+                    userId: decoded.id,
                     storyId: req.body.storyId
                 }
             })
@@ -29,7 +27,7 @@ exports.addBookmark = async (req, res) => {
             })
         } else {
             await tb_bookmark.create({
-                userId: req.tb_user.id,
+                userId: decoded.id,
                 storyId: req.body.storyId
             })
             res.send({
@@ -37,9 +35,6 @@ exports.addBookmark = async (req, res) => {
                 message: "Added Bookmark",
             })
         }
-
-        
-
 
     } catch (error) {
         res.status(500).send({
@@ -160,29 +155,9 @@ exports.getUserBookmarks = async (req, res) => {
     }
 }
 
-
 exports.deleteBookmark = async (req, res) => {
     try {
         const {id} = req.params
-
-        // const userExist = await tb_user.findOne({
-        //     where:{
-        //         id: req.tb_user.id
-        //     }
-        // })
-
-        // const userBookmark = await tb_bookmark.findOne({
-        //     where: {
-        //         id: req.tb_bookmark.userId
-        //     }
-        // })
-
-        // if ( userExist == userBookmark) {
-        //     return res.status(400).send({
-        //         status: "Failed",
-        //         message: "Beda Auth Zheyeng"
-        //     })
-        // }
 
         const bookmark = await tb_bookmark.findOne({
             where: { id }

@@ -9,26 +9,26 @@ exports.register = async (req, res) => {
     // Data from User/Client
     const input = req.body
 
-    // Code for Validation Schema 
-    const schema = Joi.object({
-        fullname: Joi.string().min(5).required(),
-        phone: Joi.string().min(7).required(),
-        email: Joi.string().email().min(5).required(),
-        password: Joi.string().min(4).required()
-    });
-
-    // Do Validation & get error object from Schema
-    const { error } = schema.validate(input);
-
-    // If error exist send Validation error message
-    if ( error )
-    return res.status(400).send({
-        error: {
-            message: error.details[0].message
-        }
-    });
-
     try {
+        // Code for Validation Schema 
+        const schema = Joi.object({
+            fullname: Joi.string().min(5).required(),
+            phone: Joi.string().min(7).required(),
+            email: Joi.string().email().min(5).required(),
+            password: Joi.string().min(4).required()
+        });
+
+        // Do Validation & get error object from Schema
+        const { error } = schema.validate(input);
+
+        // If error exist send Validation error message
+        if ( error )
+        return res.status(400).send({
+            error: {
+                message: error.details[0].message
+            }
+        });
+        
         const userExist = await tb_user.findOne({
             where: {
                 email: input.email

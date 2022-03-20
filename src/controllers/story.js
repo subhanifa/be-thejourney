@@ -150,7 +150,7 @@ exports.getStory = async (req, res) => {
                 }
             ],
             attributes: {
-                exclude: ["createdAt", "updatedAt", "idUser"]
+                exclude: ["updatedAt", "idUser"]
             }
         })
 

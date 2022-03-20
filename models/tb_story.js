@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   tb_story.init({
     title: DataTypes.STRING,
-    desc: DataTypes.STRING,
+    desc: DataTypes.TEXT,
     image: DataTypes.STRING,
     userId: DataTypes.INTEGER
   }, {
