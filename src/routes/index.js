@@ -7,15 +7,15 @@ const { register, login, checkAuth } = require('../controllers/auth')
 const { uploadFile } = require('../middlewares/uploadFile')
 const { addStory, getStories, getStory, deleteStory, getUserStories } = require('../controllers/story')
 const { addBookmark, deleteBookmark, getBookmarks, getBookmark, getUserBookmarks } = require('../controllers/bookmark')
-const { addUsers, getUsers, getUser, updateUser, deleteUser } = require('../controllers/user')
+const { addUsers, getUsers, getUser, updateUserImage } = require('../controllers/user')
 
 router.post('/user', addUsers)
 router.get('/users', getUsers)
 // router.get('/user/:id', getUser)
 router.get('/profile', getUser)
+// router.patch('/user/:id', updateUser)
+router.patch("/user/edit/image", auth,  uploadFile("image"), updateUserImage);
 
-router.patch('/user/:id', updateUser)
-router.delete('/user/:id', deleteUser)
 
 router.post('/register', register)
 router.post('/login', login)

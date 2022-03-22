@@ -4,6 +4,7 @@ const Joi = require("joi");
 const encrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+const uploadServer = "http://localhost:5000/uploads/";
 
 exports.register = async (req, res) => {
     // Data from User/Client
@@ -51,11 +52,12 @@ exports.register = async (req, res) => {
             fullname: input.fullname,
             phone: input.phone,
             email: input.email,
-            password: hashedPassword
+            password: hashedPassword,
+            image: "default.png",
         })
 
 
-        const token = jwt.sign({ id: newUser.id, name: newUser.fullname, email: newUser.email }, process.env.ACCOUNT_TOKEN)
+        const token = jwt.sign({ id: newUser.id, name: newUser.fullname, email: newUser.email, image: newUser.image }, process.env.ACCOUNT_TOKEN)
 
         const userId = ({
             id: newUser.id,
@@ -128,13 +130,15 @@ exports.login = async (req, res) => {
             });
         }
 
-        const token = jwt.sign({ id: userExist.id, name: userExist.fullname, email: userExist.email }, process.env.ACCOUNT_TOKEN)
+        const token = jwt.sign({ id: userExist.id, name: userExist.fullname, email: userExist.email, image: userExist.image }, process.env.ACCOUNT_TOKEN)
         // const token = jwt.sign({ id: newUser.id, name: newUser.fullname, email: newUser.email }, process.env.ACCOUNT_TOKEN)
 
         const user = {
             // id: tb_user.id,
             fullname: userExist.name,
             email: userExist.email,
+            phone: userExist.phone,
+            image: uploadServer + userExist.image,
             token
         }
 

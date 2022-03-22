@@ -1,5 +1,7 @@
 const { tb_user } = require('../../models')
 const jwt_decode = require('jwt-decode');
+const fs = require('fs')
+const uploadServer = "http://localhost:5000/uploads/";
 
 exports.addUsers = async (req, res) => {
     try {
@@ -88,7 +90,8 @@ exports.getUser = async (req, res) => {
       status: "Success",
       data: {
         email: data.email,
-        fullname: data.fullname
+        fullname: data.fullname,
+        image: uploadServer + data.image
       },
     });
   } catch (error) {
@@ -101,47 +104,69 @@ exports.getUser = async (req, res) => {
 };
 
 
-exports.updateUser = async (req, res) => {
+// exports.updateUser = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     await tb_user.update(req.body, {
+//       where: {
+//         id,
+//       },
+//     });
+
+//     res.send({
+//       status: "Success",
+//       message: `Update user id: ${id} finished`,
+//       data: req.body,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.send({
+//       status: "Failed",
+//       message: "Server Error",
+//     });
+//   }
+// };
+
+exports.updateUserImage = async (req, res) => {
   try {
-    const { id } = req.params;
+    const token = req.header("Authorization")
+    let decoded = jwt_decode(token)
 
-    await tb_user.update(req.body, {
+    const oldFile = await tb_user.findOne({
       where: {
-        id,
-      },
-    });
+        id: decoded.id
+      }
+    })
 
-    res.send({
+    let imageFile = "uploads/" + oldFile.image
+    if (oldFile.image !== "default.png") {
+      fs.unlink(imageFile, (err) => {
+        if (err) console.log(err)
+        else console.log("\nDeleted file: " + imageFile)
+      })
+    }
+
+    const data = await tb_user.update(
+      {
+        image: req.file.filename,
+      },
+      {
+        where: {
+          id: decoded.id
+        },
+      }
+    );
+    console.log(req.file);
+
+    res.status(200).send({
       status: "Success",
-      message: `Update user id: ${id} finished`,
-      data: req.body,
+      message: "User Image Updated",
+      data,
     });
   } catch (error) {
     console.log(error);
-    res.send({
-      status: "Failed",
-      message: "Server Error",
-    });
-  }
-};
-
-exports.deleteUser = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    await tb_user.destroy({
-      where: {
-        id,
-      },
-    });
-
-    res.send({
-      status: "Success",
-      message: `Delete user id: ${id} finished`,
-    });
-  } catch (error) {
-    console.log(error);
-    res.send({
+    res.status(500).send({
       status: "Failed",
       message: "Server Error",
     });
