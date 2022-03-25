@@ -12,10 +12,9 @@ const { addUsers, getUsers, getUser, updateUserImage } = require('../controllers
 router.post('/user', addUsers)
 router.get('/users', getUsers)
 // router.get('/user/:id', getUser)
-router.get('/profile', getUser)
+router.get('/profile', auth,  getUser)
 // router.patch('/user/:id', updateUser)
-router.patch("/user/edit/image", auth,  uploadFile("image"), updateUserImage);
-
+router.patch('/user/edit/image', auth, uploadFile("image"), updateUserImage)
 
 router.post('/register', register)
 router.post('/login', login)
@@ -23,7 +22,7 @@ router.get('/check-auth', auth, checkAuth);
 
 router.post('/story', auth, uploadFile("image"), addStory)
 router.get('/stories', getStories)
-router.get('/user-stories', getUserStories)
+router.get('/user-stories', auth,  getUserStories)
 router.get('/story/:id', getStory)
 router.delete('/story/:id', auth, deleteStory)
 

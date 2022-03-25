@@ -72,6 +72,30 @@ exports.getUsers = async (req, res) => {
 //   }
 // };
 
+// exports.updateUser = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     await tb_user.update(req.body, {
+//       where: {
+//         id,
+//       },
+//     });
+
+//     res.send({
+//       status: "Success",
+//       message: `Update user id: ${id} finished`,
+//       data: req.body,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.send({
+//       status: "Failed",
+//       message: "Server Error",
+//     });
+//   }
+// };
+
 exports.getUser = async (req, res) => {
   try {
     const token = req.header("Authorization")
@@ -103,31 +127,6 @@ exports.getUser = async (req, res) => {
   }
 };
 
-
-// exports.updateUser = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-
-//     await tb_user.update(req.body, {
-//       where: {
-//         id,
-//       },
-//     });
-
-//     res.send({
-//       status: "Success",
-//       message: `Update user id: ${id} finished`,
-//       data: req.body,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.send({
-//       status: "Failed",
-//       message: "Server Error",
-//     });
-//   }
-// };
-
 exports.updateUserImage = async (req, res) => {
   try {
     const token = req.header("Authorization")
@@ -140,7 +139,7 @@ exports.updateUserImage = async (req, res) => {
     })
 
     let imageFile = "uploads/" + oldFile.image
-    if (oldFile.image !== "default.png") {
+    if ( oldFile.image !== "default.png" ) {
       fs.unlink(imageFile, (err) => {
         if (err) console.log(err)
         else console.log("\nDeleted file: " + imageFile)
@@ -149,26 +148,25 @@ exports.updateUserImage = async (req, res) => {
 
     const data = await tb_user.update(
       {
-        image: req.file.filename,
+        image: req.file.filename
       },
       {
         where: {
           id: decoded.id
-        },
+        }
       }
-    );
-    console.log(req.file);
+    )
 
     res.status(200).send({
       status: "Success",
       message: "User Image Updated",
-      data,
-    });
+      data
+    })
   } catch (error) {
-    console.log(error);
+    console.log(error)
     res.status(500).send({
       status: "Failed",
-      message: "Server Error",
-    });
+      message: "Server Error"
+    })
   }
-};
+}
