@@ -1,7 +1,7 @@
 const { tb_story, tb_user } = require('../../models')
 const fs = require('fs');
 const jwt_decode = require('jwt-decode');
-
+const cloudinary = require("../utils/cloudinary");
 
 exports.addStory = async (req, res) => {
     // Data from User/Client
@@ -24,12 +24,18 @@ exports.addStory = async (req, res) => {
             })
         }
 
+        const result = await cloudinary.uploader.upload(request.file.path, {
+            folder: "blog_files",
+            use_filename: true,
+            unique_filename: true,
+        });
+
         const { data } = req.body;
         let newStory = await tb_story.create({
             ...data,
             title: input.title,
             desc: input.desc,
-            image: req.file.filename,
+            image: result.public_id,
             userId: req.tb_user.id
         })
 
