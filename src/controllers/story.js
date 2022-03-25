@@ -1,7 +1,7 @@
 const { tb_story, tb_user } = require('../../models')
 const fs = require('fs');
 const jwt_decode = require('jwt-decode');
-const cloudinary = require("../utils/cloudinary");
+const cloudinary = require("../../utils/cloudinary");
 
 exports.addStory = async (req, res) => {
     // Data from User/Client
