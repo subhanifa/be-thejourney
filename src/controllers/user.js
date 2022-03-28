@@ -1,7 +1,9 @@
 const { tb_user } = require('../../models')
 const jwt_decode = require('jwt-decode');
-const fs = require('fs')
-const uploadServer = "http://localhost:5000/uploads/";
+// const fs = require('fs')
+// const uploadServer = "http://localhost:5000/uploads/";
+const cloudinary = require("../utils/cloudinary");
+
 
 exports.addUsers = async (req, res) => {
     try {
@@ -115,7 +117,7 @@ exports.getUser = async (req, res) => {
       data: {
         email: data.email,
         fullname: data.fullname,
-        image: uploadServer + data.image
+        image: process.env.USER_PATH + "user-journey/" + data.image,
       },
     });
   } catch (error) {
@@ -138,12 +140,11 @@ exports.updateUserImage = async (req, res) => {
       }
     })
 
-    let imageFile = "uploads/" + oldFile.image
+    // let imageFile = "uploads/" + oldFile.image
     if ( oldFile.image !== "default.png" ) {
-      fs.unlink(imageFile, (err) => {
-        if (err) console.log(err)
-        else console.log("\nDeleted file: " + imageFile)
-      })
+      cloudinary.uploader.destroy(oldData.image, function (result) {
+        console.log(result);
+      });
     }
 
     const data = await tb_user.update(

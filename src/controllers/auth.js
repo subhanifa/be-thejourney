@@ -4,7 +4,9 @@ const Joi = require("joi");
 const encrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const uploadServer = "http://localhost:5000/uploads/";
+// const uploadServer = "http://localhost:5000/uploads/";
+const cloudinary = require("../utils/cloudinary");
+
 
 exports.register = async (req, res) => {
     // Data from User/Client
