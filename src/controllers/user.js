@@ -142,7 +142,7 @@ exports.updateUserImage = async (req, res) => {
 
     // let imageFile = "uploads/" + oldFile.image
     if ( oldFile.image !== "default.png" ) {
-      cloudinary.uploader.destroy(oldData.image, function (result) {
+      cloudinary.uploader.destroy(oldFile.image, function (result) {
         console.log(result);
       });
     }
