@@ -117,7 +117,7 @@ exports.getUser = async (req, res) => {
       data: {
         email: data.email,
         fullname: data.fullname,
-        image: process.env.USER_PATH + "user-journey/" + data.image,
+        image: process.env.USER_PATH + data.image,
       },
     });
   } catch (error) {
