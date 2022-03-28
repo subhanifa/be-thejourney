@@ -147,9 +147,15 @@ exports.updateUserImage = async (req, res) => {
       });
     }
 
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "user-journey",
+      use_filename: true,
+      unique_filename: true,
+    });
+
     const data = await tb_user.update(
       {
-        image: req.file.filename
+        image: result.public_id,
       },
       {
         where: {
