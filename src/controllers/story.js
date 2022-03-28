@@ -24,7 +24,7 @@ exports.addStory = async (req, res) => {
             })
         }
 
-        const result = await cloudinary.uploader.upload(request.file.path, {
+        const result = await cloudinary.uploader.upload(req.file.path, {
             folder: "story-journey",
             use_filename: true,
             unique_filename: true,
