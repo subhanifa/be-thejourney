@@ -140,7 +140,7 @@ exports.login = async (req, res) => {
             fullname: userExist.name,
             email: userExist.email,
             phone: userExist.phone,
-            image: process.env.USER_PATH + "user-journey/" + userExist.image,
+            image: process.env.USER_PATH + userExist.image,
             token
         }
 
